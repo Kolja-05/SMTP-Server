@@ -1,0 +1,46 @@
+package server;
+
+import java.nio.channels.SocketChannel;
+
+import protocol.SmtpState;
+
+public class ClientSession {
+    private String sender;
+    private String recipient;
+    private SmtpState state;
+
+    private final SocketChannel channel;
+
+
+    public ClientSession(SocketChannel channel) {
+        this.channel = channel;
+        this.state = protocol.SmtpState.CONNECTED;
+    }
+
+
+    public String getSender() {
+        return sender;
+    }
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
+    }
+    
+    public SmtpState getState() {
+        return state;
+    }
+    public void setState(SmtpState state) {
+        this.state = state;
+    }
+
+    public SocketChannel getChannel() {
+        return channel;
+    }
+}
