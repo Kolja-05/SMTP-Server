@@ -3,7 +3,8 @@ An implementation of an SMTP-Server in Java.
 
 SMTP is a applicationlayerprotocol to transfer emails.
 ### 1. Client Connects to Port 25 on SMTP-Server and performs Handshake
-Client: HELO client.domaint \n
+Client: HELO client.domaint
+
 Server: 250 server.domain, service ready
 ### 2. Client sends sender address
 Client: MAIL FROM:<sender@example.com>
