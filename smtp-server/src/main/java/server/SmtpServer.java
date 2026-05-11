@@ -2,11 +2,11 @@ package server;
 
 import java.io.IOException;
 import java.nio.channels.*;
-
 import javax.imageio.IIOException;
-
 import storage.MailStorage;
 
+
+// Boundry in ECB-Pattern
 public class SmtpServer {
     private static final int PORT = 25;
     private Selector selector;

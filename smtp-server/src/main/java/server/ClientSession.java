@@ -4,6 +4,9 @@ import java.nio.channels.SocketChannel;
 
 import protocol.SmtpState;
 
+
+
+// Entity in ECB-Pattern
 public class ClientSession {
     private String sender;
     private String recipient;

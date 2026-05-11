@@ -7,6 +7,9 @@ import protocol.SmtpResponse;
 import protocol.SmtpState;
 import storage.MailStorage;
 
+
+
+// Controller in ECB-Pattern
 public class SmtpCommandHandler {
 
     private final MailStorage mailStorage;
