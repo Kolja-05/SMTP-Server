@@ -16,6 +16,20 @@ public class SmtpCommandHandler {
     }
 
 
+    // processes one line send by Client
+    // @param line  current line send by Client
+    // @param session corresponding ClientSession
+    // (needed to determine state to decide if we need to handle data or command to decide if we need to handle data or command)
+    private void processLine(String line, ClientSession session) throws IOException{
+        if (session.getState() == SmtpState.DATA) {
+            handleDataTransfer(line, session);
+        }
+        else {
+            handleCommand(line, session);
+        }
+    }
+
+
     private void handleCommand(String line, ClientSession session) throws IOException {
         String command = line.trim().toUpperCase();
         if (command.startsWith("HELO")){
@@ -35,7 +49,6 @@ public class SmtpCommandHandler {
         }
     }
 
-
     private void handleHelo(String line, ClientSession session) throws IOException {
         if (session.getState() != protocol.SmtpState.CONNECTED) {
             sendResponse(session, SmtpResponse.BAD_SEQUENCE);
@@ -44,7 +57,6 @@ public class SmtpCommandHandler {
         sendResponse(session, SmtpResponse.OK);
         session.setState(SmtpState.GREETED);
         return;
-
     }
 
     private void handleRecptTo(String line, ClientSession session) throws IOException {
@@ -67,7 +79,7 @@ public class SmtpCommandHandler {
             return;
         }
         String address = extractAddress(line);
-        if (address == null || address.isBlank()) {
+        if (address == null) {
             sendResponse(session, SmtpResponse.UNKNOWN);
             return;
         }
@@ -79,12 +91,27 @@ public class SmtpCommandHandler {
 
     private void handleDataCommand(ClientSession session) throws IOException {
         if (session.getState() != SmtpState.RCPT_TO) {
-            sendResponse(session, SmtpResponse.UNKNOWN);
+            sendResponse(session, SmtpResponse.BAD_SEQUENCE);
+            return;
         }
         session.setState(SmtpState.DATA);
-        // TODO when Data is complete save mail and reset
-        session.reset();
+        sendResponse(session, SmtpResponse.START_INPUT);
         return;
+    }
+
+    private void handleDataTransfer(String line, ClientSession session) throws IOException {
+        if (line.equals(".")) {
+            // end of body
+            mailStorage.saveMail(session);
+            session.reset();
+            sendResponse(session, SmtpResponse.OK);
+            return;
+        }
+        // append line content to session data
+        // TODO maybe check for headers: From, To, Subject
+        session.appendData(line);
+        session.reset();
+
     }
 
     private void handleHelp(ClientSession session) throws IOException {

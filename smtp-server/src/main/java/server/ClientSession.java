@@ -7,8 +7,10 @@ import protocol.SmtpState;
 public class ClientSession {
     private String sender;
     private String recipient;
-    private SmtpState state;
+    private StringBuilder body;
 
+
+    private SmtpState state;
     private final SocketChannel channel;
 
 
@@ -22,7 +24,9 @@ public class ClientSession {
         recipient = null;
         state = SmtpState.GREETED;
     }
-
+    public void appendData(String line) {
+        body.append(line).append(" \r\n");
+    }
 
     public String getSender() {
         return sender;
@@ -38,7 +42,7 @@ public class ClientSession {
     public void setRecipient(String recipient) {
         this.recipient = recipient;
     }
-    
+ 
     public SmtpState getState() {
         return state;
     }

@@ -13,18 +13,20 @@ public class MailStorage {
 
 
     public void saveMail(ClientSession session) throws IOException {
-
+        //TODO
     }
 
     private Path createRecipientDir(String recipient) throws IOException {
         return null;
+        //TODO
     }
 
     private int generateMessage() {
         return 0;
+        //TODO
     }
 
     private void writeFile(Path path, String content) throws IOException {
-
+        //TODO
     }
 }
