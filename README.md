@@ -11,8 +11,9 @@ SMTP is an **application-layer protocol** used to transfer email messages betwee
 ### 1. Client connects to the SMTP server (port 25) and performs the handshake
 
 ```
+Server: 220 server.domain, Service ready
 Client: HELO client.domain
-Server: 250 server.domain Service ready
+Server: 2OK
 ```
 
 ---
@@ -47,7 +48,9 @@ Client sends headers and body, terminated by `<CRLF>.<CRLF>`:
 ```
 Client: From: "Sender" <sender@example.com>
         To: "Recipient" <recipient@example.com>
-        Subject: Example content
+        Subject: Example Subject
+
+        Example Body
         .
 ```
 
