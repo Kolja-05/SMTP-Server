@@ -1,33 +1,69 @@
-# SMTP-Server
-An implementation of an SMTP-Server in Java.
+# SMTP Server
 
-SMTP is a applicationlayerprotocol to transfer emails.
-### 1. Client Connects to Port 25 on SMTP-Server and performs Handshake
-Client: HELO client.domain
+An implementation of an SMTP server in Java.
 
-Server: 250 server.domain, service ready
-### 2. Client sends sender address
-Client: MAIL FROM:<sender@example.com>
+SMTP is an **application-layer protocol** used to transfer email messages between clients and servers.
 
-Server: 250 OK
-### 3. Client sends recipients address
-Client: RCPT TO:<recipient@example.com>
+---
 
-Server: 250 OK
-### 4. Client sends emailcontent
-Client: DATA
+## SMTP Session Flow
 
-Server: 354 End data with -CLRF-.-CLRF-
+### 1. Client connects to the SMTP server (port 25) and performs the handshake
 
-Client: From: "sender" <sender@example.com>
+```
+Client → Server: HELO client.domain
+Server → Client: 250 server.domain Service ready
+```
 
-        To: "recipient" <recipient@example.com>
-        
-        Subject: Example content
-        .
-        
-Server: 250 OK
-### 5. Client ends session
-Client: QUIT
+---
 
-Server: 221 Bye
+### 2. Client sends the sender address
+
+```
+Client → Server: MAIL FROM:<sender@example.com>
+Server → Client: 250 OK
+```
+
+---
+
+### 3. Client sends the recipient address
+
+```
+Client → Server: RCPT TO:<recipient@example.com>
+Server → Client: 250 OK
+```
+
+---
+
+### 4. Client sends the email content
+
+```
+Client → Server: DATA
+Server → Client: 354 End data with <CRLF>.<CRLF>
+```
+
+Client sends headers and body, terminated by `<CRLF>.<CRLF>`:
+
+```
+From: "Sender" <sender@example.com>
+To: "Recipient" <recipient@example.com>
+Subject: Example content
+
+This is the message body.
+.
+```
+
+```
+Server → Client: 250 OK
+```
+
+---
+
+### 5. Client ends the session
+
+```
+Client → Server: QUIT
+Server → Client: 221 Bye
+```
+
+---
