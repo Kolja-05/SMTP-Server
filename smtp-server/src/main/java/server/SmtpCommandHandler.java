@@ -52,6 +52,21 @@ public class SmtpCommandHandler {
         }
     }
 
+    private void handleDataTransfer(String line, ClientSession session) throws IOException {
+        if (line.equals(".")) {
+            // end of body
+            mailStorage.saveMail(session);
+            session.reset();
+            sendResponse(session, SmtpResponse.OK);
+            return;
+        }
+        // append line content to session data
+        // TODO maybe check for headers: From, To, Subject
+        session.appendData(line);
+        session.reset();
+
+    }
+
     private void handleHelo(String line, ClientSession session) throws IOException {
         if (session.getState() != protocol.SmtpState.CONNECTED) {
             sendResponse(session, SmtpResponse.BAD_SEQUENCE);
@@ -102,20 +117,7 @@ public class SmtpCommandHandler {
         return;
     }
 
-    private void handleDataTransfer(String line, ClientSession session) throws IOException {
-        if (line.equals(".")) {
-            // end of body
-            mailStorage.saveMail(session);
-            session.reset();
-            sendResponse(session, SmtpResponse.OK);
-            return;
-        }
-        // append line content to session data
-        // TODO maybe check for headers: From, To, Subject
-        session.appendData(line);
-        session.reset();
 
-    }
 
     private void handleHelp(ClientSession session) throws IOException {
         sendResponse(session, SmtpResponse.HELP);
@@ -140,5 +142,7 @@ public class SmtpCommandHandler {
 
     private void sendResponse(ClientSession session, SmtpResponse response) throws IOException {
         // TODO
+        // send response via session channel
+        // 
     }
 }
