@@ -6,7 +6,7 @@ import javax.imageio.IIOException;
 import storage.MailStorage;
 
 
-// Boundry in ECB-Pattern
+// Boundry to Network in ECB-Pattern
 public class SmtpServer {
     private static final int PORT = 25;
     private Selector selector;
@@ -26,7 +26,7 @@ public class SmtpServer {
 
         }
     }
-    
+
     private void acceptConnection(SelectionKey key) throws IOException {
 
     }

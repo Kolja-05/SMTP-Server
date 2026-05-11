@@ -6,6 +6,8 @@ import java.util.Random;
 
 import server.ClientSession;
 
+
+// Boundry to Filesystem in ECB-Pattern
 public class MailStorage {
     private static final String MAIL_BASE_DIR = "mails";
 
