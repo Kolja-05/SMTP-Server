@@ -19,14 +19,22 @@ public class SmtpCommandHandler {
     private void handleCommand(String line, ClientSession session) throws IOException {
         String command = line.trim().toUpperCase();
         if (command.startsWith("HELO")){
-
+            handleHelo(line, session);
+        } else if (command.startsWith("MAIL FROM")) {
+            handleMailFrom(line, session);
+        } else if (command.startsWith("RCPT TO")) {
+            handleRecptTo(line, session);
+        } else if (command.equals("DATA")) {
+            handleDataCommand(session);
+        } else if (command.equals("HELP")) {
+            handleHelp(session);
+        } else if (command.equals("QUIT")) {
+            handleQuit(session);
+        } else {
+            sendResponse(session, SmtpResponse.UNKNOWN);
         }
-        //...
     }
 
-    private void handleData(String line, ClientSession session) throws IOException {
-
-    }
 
     private void handleHelo(String line, ClientSession session) throws IOException {
         if (session.getState() != protocol.SmtpState.CONNECTED) {
@@ -66,7 +74,6 @@ public class SmtpCommandHandler {
         session.setSender( address);
         session.setState(SmtpState.MAIL_FROM);
         sendResponse(session, SmtpResponse.OK);
-        // TODO reset
         return;
     }
 
@@ -75,6 +82,8 @@ public class SmtpCommandHandler {
             sendResponse(session, SmtpResponse.UNKNOWN);
         }
         session.setState(SmtpState.DATA);
+        // TODO when Data is complete save mail and reset
+        session.reset();
         return;
     }
 
@@ -87,10 +96,19 @@ public class SmtpCommandHandler {
     }
 
     private String extractAddress(String line) {
-        return null;
+        // address is allways inside <>
+        if (line == null) {
+            return null;
+        }
+        int start = line.indexOf("<");
+        int end = line.indexOf(">");
+        if (start == -1 || end == -1) {
+            return null;
+        }
+        return line.substring(start+1, end);
     }
 
     private void sendResponse(ClientSession session, SmtpResponse response) throws IOException {
-
+        // TODO
     }
 }

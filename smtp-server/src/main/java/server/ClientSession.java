@@ -17,6 +17,12 @@ public class ClientSession {
         this.state = protocol.SmtpState.CONNECTED;
     }
 
+    public void reset() {
+        sender = null;
+        recipient = null;
+        state = SmtpState.GREETED;
+    }
+
 
     public String getSender() {
         return sender;
