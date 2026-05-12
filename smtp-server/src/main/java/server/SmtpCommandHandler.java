@@ -2,6 +2,7 @@ package server;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
+import java.nio.channels.SocketChannel;
 
 import protocol.SmtpResponse;
 import protocol.SmtpState;
@@ -23,7 +24,7 @@ public class SmtpCommandHandler {
     // @param line  current line send by Client
     // @param session corresponding ClientSession
     // (needed to determine state to decide if we need to handle data or command to decide if we need to handle data or command)
-    private void processLine(String line, ClientSession session) throws IOException{
+    public void processLine(String line, ClientSession session) throws IOException{
         if (session.getState() == SmtpState.DATA) {
             handleDataTransfer(line, session);
         }
@@ -142,7 +143,7 @@ public class SmtpCommandHandler {
 
     private void sendResponse(ClientSession session, SmtpResponse response) throws IOException {
         // TODO
-        // send response via session channel
-        // 
+        // set chanel to isWriteable. with set writeable
+        // get session and response to server for sending
     }
 }
