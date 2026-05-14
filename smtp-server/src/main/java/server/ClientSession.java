@@ -20,15 +20,23 @@ public class ClientSession {
     public ClientSession(SocketChannel channel) {
         this.channel = channel;
         this.state = protocol.SmtpState.CONNECTED;
+
+        // added: initialize body
+        this.body = new StringBuilder();
     }
 
     public void reset() {
         sender = null;
         recipient = null;
+
+        // added: clean body
+        body.setLength(0);
+
         state = SmtpState.GREETED;
     }
     public void appendData(String line) {
-        body.append(line).append(" \r\n");
+        // orginal: body.append(line).append(" \r\n"), now corrected
+        body.append(line).append("\r\n");
     }
 
     public String getSender() {
@@ -44,6 +52,11 @@ public class ClientSession {
 
     public void setRecipient(String recipient) {
         this.recipient = recipient;
+    }
+
+    // added: return body of the email, related to MailStorage
+    public String getData() {
+        return body.toString();
     }
  
     public SmtpState getState() {
