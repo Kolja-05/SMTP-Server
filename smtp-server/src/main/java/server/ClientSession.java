@@ -34,6 +34,7 @@ public class ClientSession {
 
         state = SmtpState.GREETED;
     }
+
     public void appendData(String line) {
         // orginal: body.append(line).append(" \r\n"), now corrected
         body.append(line).append("\r\n");
@@ -42,6 +43,7 @@ public class ClientSession {
     public String getSender() {
         return sender;
     }
+    
     public void setSender(String sender) {
         this.sender = sender;
     }

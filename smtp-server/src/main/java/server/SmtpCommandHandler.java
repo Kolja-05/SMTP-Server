@@ -1,8 +1,8 @@
 package server;
 
 import java.io.IOException;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.SocketChannel;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 import protocol.SmtpResponse;
 import protocol.SmtpState;
@@ -64,7 +64,7 @@ public class SmtpCommandHandler {
         // append line content to session data
         // TODO maybe check for headers: From, To, Subject
         session.appendData(line);
-        session.reset();
+        //removed session.reset() here because it makes no sense to reset the session after every line of the body
 
     }
 
@@ -86,9 +86,11 @@ public class SmtpCommandHandler {
         String address = extractAddress(line);
         if (address == null || address.isBlank()) {
             sendResponse(session, SmtpResponse.UNKNOWN);
+            return;
         }
         session.setRecipient(address);
         session.setState(SmtpState.RCPT_TO);
+        sendResponse(session, SmtpResponse.OK);
         return;
     }
 
@@ -119,30 +121,38 @@ public class SmtpCommandHandler {
     }
 
 
-
     private void handleHelp(ClientSession session) throws IOException {
         sendResponse(session, SmtpResponse.HELP);
     }
 
     private void handleQuit(ClientSession session) throws IOException {
         sendResponse(session, SmtpResponse.BYE);
+        session.getChannel().close();
     }
 
     private String extractAddress(String line) {
-        // address is allways inside <>
-        if (line == null) {
-            return null;
-        }
+        // address is allways inside <> // spoiler: adress is not always inside <>
+        if (line == null) return null;
         int start = line.indexOf("<");
         int end = line.indexOf(">");
-        if (start == -1 || end == -1) {
-            return null;
+        if (start != -1 || end != -1) {
+            return line.substring(start + 1, end);
         }
-        return line.substring(start+1, end);
+
+        // client sends adress without <>
+        int dots = line.indexOf(":");
+        if (dots != -1) return line.substring(dots + 1).trim();
+
+        return null;
     }
 
     private void sendResponse(ClientSession session, SmtpResponse response) throws IOException {
         // TODO
+        String text = response.toString() + "\r\n";
+        ByteBuffer byteBuffer = ByteBuffer.wrap(text.getBytes(StandardCharsets.US_ASCII));
+        while (byteBuffer.hasRemaining()) {
+            session.getChannel().write(byteBuffer);
+        }
         // set chanel to isWriteable. with set writeable
         // get session and response to server for sending
     }
