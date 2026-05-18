@@ -11,12 +11,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.Set;
 
+import protocol.SmtpResponse;
 import storage.MailStorage;
 
 
 // Boundry to Network in ECB-Pattern
 public class SmtpServer {
-    private static final int PORT = 25;
+    private static final int PORT = 2525;
     private Selector selector;
     private final SmtpCommandHandler commandHandler;
     private ServerSocketChannel servSock;
@@ -85,10 +86,10 @@ public class SmtpServer {
 
 
         // Test response not clean do over send function at isWriteable in eventloop
-        String greeting = "220 localhost SMTP server ready\r\n";
-        ByteBuffer buffer = ByteBuffer.wrap(greeting.getBytes());
-        client.write(buffer);
-
+        // String greeting = "220 localhost SMTP server ready\r\n";
+        // ByteBuffer buffer = ByteBuffer.wrap(greeting.getBytes());
+        // client.write(buffer);
+        commandHandler.sendGreetings(session);
 
     }
 
@@ -129,7 +130,7 @@ public class SmtpServer {
             server.start();
         }
         catch(IOException e) {
-
+            e.printStackTrace();
         }
     }
 
